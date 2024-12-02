@@ -1,0 +1,17 @@
+FROM golang:1.23.3 AS build
+
+WORKDIR /mytestcontainer
+
+COPY go.mod go.mod
+
+RUN go mod download
+
+COPY . .
+
+RUN make build-base
+
+FROM ubuntu:22.04
+
+COPY --from=build /mytestcontainer/bin/base /bin/base
+
+CMD ["/bin/base"]
